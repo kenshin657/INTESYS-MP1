@@ -1,4 +1,5 @@
 from tkinter import *
+from tkinter import messagebox
 
 
 class Prompt:
@@ -13,15 +14,27 @@ class Prompt:
         self.e.grid(row=0, column=1)
         self.e.focus_set()
 
-        self.btn = Button(frame, text='Generate Maze', command=self.helloPrint)
+        self.btn = Button(frame, text='Generate Maze', command=self.generateMaze)
         self.btn.grid(columnspan=2, row=1)
 
-    def helloPrint(self):
+    def generateMaze(self):
         input = self.e.get()
-        print('You input ' + input)
+        if int(input) < 8 or int(input) > 64:
+            messagebox.showerror('Invalid Input', message='Please enter a valid number')
+        else:
+            print('STUFF')
+
+class Maze:
+    colorBG = "red"
+    emptyColor = "white"
+    colorBorder = "red"
+    emptyBorder = "black"
+
+    def __init__(self, master, x, y):
+        frame = Frame(master)
 
 
 root = Tk()
 start = Prompt(root)
-
 root.mainloop()
+
