@@ -43,6 +43,8 @@ class Cell():
     EMPTY_COLOR_BG = "white"
     FILLED_COLOR_BORDER = "black"
     EMPTY_COLOR_BORDER = "black"
+    START_STATE = "green"
+    END_STATE = "red"
 
     def __init__(self, master, x, y, size):
         """ Constructor of the object called by Cell(...) """
@@ -63,6 +65,7 @@ class Cell():
             outline = Cell.FILLED_COLOR_BORDER
 
             if not self.fill:
+                #fill = Cell.START_STATE
                 fill = Cell.EMPTY_COLOR_BG
                 outline = Cell.EMPTY_COLOR_BORDER
 
@@ -72,6 +75,28 @@ class Cell():
             ymax = ymin + self.size
 
             self.master.create_rectangle(xmin, ymin, xmax, ymax, fill = fill, outline = outline)
+    def drawStart(self):
+        fill = Cell.START_STATE
+        outline = Cell.EMPTY_COLOR_BORDER
+
+        xmin = self.abs * self.size
+        xmax = xmin + self.size
+        ymin = self.ord * self.size
+        ymax = ymin + self.size
+
+        self.master.create_rectangle(xmin, ymin, xmax, ymax, fill=fill, outline=outline)
+
+    def drawEnd(self):
+        fill = Cell.END_STATE
+        outline = Cell.EMPTY_COLOR_BORDER
+
+        xmin = self.abs * self.size
+        xmax = xmin + self.size
+        ymin = self.ord * self.size
+        ymax = ymin + self.size
+
+        self.master.create_rectangle(xmin, ymin, xmax, ymax, fill=fill, outline=outline)
+
 
 class CellGrid(Canvas):
     def __init__(self,master, rowNumber, columnNumber, cellSize, *args, **kwargs):
@@ -93,19 +118,21 @@ class CellGrid(Canvas):
 
         #bind click action
         self.bind("<Button-1>", self.handleMouseClick)
-        #bind moving while clicking
-        #self.bind("<B1-Motion>", self.handleMouseMotion)
-        #bind release button action - clear the memory of midified cells.
         self.bind("<ButtonRelease-1>", lambda event: self.switched.clear())
 
         self.draw()
 
-
-
     def draw(self):
+        skip = False
         for row in self.grid:
             for cell in row:
-                cell.draw()
+                if skip == False:
+                    cell.drawStart()
+                    skip = True
+                else:
+                    cell.draw()
+
+        cell.drawEnd()
 
     def _eventCoords(self, event):
         row = int(event.y / self.cellSize)
