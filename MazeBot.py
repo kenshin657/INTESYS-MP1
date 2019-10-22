@@ -1,5 +1,6 @@
 from tkinter import *
 from tkinter import messagebox
+import time
 
 
 class Prompt:
@@ -45,6 +46,8 @@ class Cell():
     EMPTY_COLOR_BORDER = "black"
     START_STATE = "green"
     END_STATE = "red"
+    VISITED_STATE = "yellow"
+    PATH_STATE = "orange"
 
     def __init__(self, master, x, y, size):
         """ Constructor of the object called by Cell(...) """
@@ -53,6 +56,9 @@ class Cell():
         self.ord = y
         self.size= size
         self.fill= False
+        self.visited = False
+        self.start = False
+        self.end  = False
 
     def _switch(self):
         """ Switch if the cell is filled or not. """
@@ -60,6 +66,7 @@ class Cell():
 
     def draw(self):
         """ order to the cell to draw its representation on the canvas """
+
         if self.master != None :
             fill = Cell.FILLED_COLOR_BG
             outline = Cell.FILLED_COLOR_BORDER
@@ -127,12 +134,14 @@ class CellGrid(Canvas):
         for row in self.grid:
             for cell in row:
                 if skip == False:
+                    cell.start = True
                     cell.drawStart()
                     skip = True
                 else:
                     cell.draw()
 
         cell.drawEnd()
+        cell.end = True
 
     def _eventCoords(self, event):
         row = int(event.y / self.cellSize)
@@ -142,10 +151,13 @@ class CellGrid(Canvas):
     def handleMouseClick(self, event):
         row, column = self._eventCoords(event)
         cell = self.grid[row][column]
-        cell._switch()
-        cell.draw()
-        #add the cell to the list of cell switched during the click
-        self.switched.append(cell)
+        if(cell.start == True or cell.end == True):
+            print("Do Nothing")
+        else:
+            cell._switch()
+            cell.draw()
+            #add the cell to the list of cell switched during the click
+            self.switched.append(cell)
 
 
 
