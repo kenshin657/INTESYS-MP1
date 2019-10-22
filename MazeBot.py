@@ -1,6 +1,7 @@
 from tkinter import *
 from tkinter import messagebox
 import time
+from collections import deque
 
 
 class Prompt:
@@ -34,8 +35,7 @@ class Prompt:
 
             grid = CellGrid(app, int(input), int(input), cellSize)
             grid.pack()
-            button1 = Button(app, text="Find Path")
-            button1.pack()
+            #btn.pack()
 
 
             app.mainloop()
@@ -107,12 +107,17 @@ class Cell():
 
         self.master.create_rectangle(xmin, ymin, xmax, ymax, fill=fill, outline=outline)
 
+    def drawPath(self):
+        print("Init")
+
 
 class CellGrid(Canvas):
     def __init__(self,master, rowNumber, columnNumber, cellSize, *args, **kwargs):
         Canvas.__init__(self, master, width = cellSize * columnNumber , height = cellSize * rowNumber, *args, **kwargs)
 
         self.cellSize = cellSize
+        self.button = Button(master, text="Solve Maze", command=self.drawPath)
+        self.button.pack()
 
         self.grid = []
         for row in range(rowNumber):
@@ -131,6 +136,9 @@ class CellGrid(Canvas):
         self.bind("<ButtonRelease-1>", lambda event: self.switched.clear())
 
         self.draw()
+
+    def drawPath(self):
+        print("Please work")
 
     def draw(self):
         skip = False
