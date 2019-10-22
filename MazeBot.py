@@ -34,6 +34,9 @@ class Prompt:
 
             grid = CellGrid(app, int(input), int(input), cellSize)
             grid.pack()
+            button1 = Button(app, text="Find Path")
+            button1.pack()
+
 
             app.mainloop()
 
