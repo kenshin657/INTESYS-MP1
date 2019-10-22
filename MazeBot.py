@@ -2,6 +2,7 @@ from tkinter import *
 from tkinter import messagebox
 import time
 from collections import deque
+from itertools import product, starmap, islice
 
 
 class Prompt:
@@ -65,7 +66,7 @@ class Cell():
 
     def _switch(self):
         """ Switch if the cell is filled or not. """
-        self.fill= not self.fill
+        self.fill = not self.fill
 
     def draw(self):
         """ order to the cell to draw its representation on the canvas """
@@ -127,6 +128,14 @@ class CellGrid(Canvas):
     def __init__(self,master, rowNumber, columnNumber, cellSize, *args, **kwargs):
         Canvas.__init__(self, master, width = cellSize * columnNumber , height = cellSize * rowNumber, *args, **kwargs)
 
+        self.boardSize = rowNumber
+
+        #initilize the queues & BFS for the BFS algorithm
+        self.q1 = deque()
+        self.path = []
+        self.correctPath ={}
+        self.visited = set()
+
         self.cellSize = cellSize
         self.button = Button(master, text="Solve Maze", command=self.drawPath)
         self.button.pack()
@@ -154,8 +163,20 @@ class CellGrid(Canvas):
         print(self.grid[0][0].abs)
         print(self.grid[1][1].abs)
         print(self.grid[1][1].fill)
+        self.findWalkAble()
 
-        self.grid[1][1].drawPath()
+        curX = 0
+        curY = 0
+
+
+    def findWalkAble(self):
+        for row in self.grid:
+            for cell in row:
+                if cell.fill == False:
+                    self.path.append((cell.abs, cell.ord))
+
+        for x in range(len(self.path)):
+            print(self.path[x])
 
 
     def draw(self):
