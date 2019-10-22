@@ -108,7 +108,19 @@ class Cell():
         self.master.create_rectangle(xmin, ymin, xmax, ymax, fill=fill, outline=outline)
 
     def drawPath(self):
-        print("Init")
+        if not self.visited:
+            self.visited = True
+
+        fill = Cell.VISITED_STATE
+        outline = Cell.FILLED_COLOR_BORDER
+
+        xmin = self.abs * self.size
+        xmax = xmin + self.size
+        ymin = self.ord * self.size
+        ymax = ymin + self.size
+
+        self.master.create_rectangle(xmin, ymin, xmax, ymax, fill=fill, outline=outline)
+
 
 
 class CellGrid(Canvas):
@@ -139,6 +151,12 @@ class CellGrid(Canvas):
 
     def drawPath(self):
         print("Please work")
+        print(self.grid[0][0].abs)
+        print(self.grid[1][1].abs)
+        print(self.grid[1][1].fill)
+
+        self.grid[1][1].drawPath()
+
 
     def draw(self):
         skip = False
