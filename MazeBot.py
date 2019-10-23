@@ -134,6 +134,7 @@ class CellGrid(Canvas):
         self.q1 = deque()
         self.path = []
         self.correctPath ={}
+        self.walls = []
         self.visited = set()
 
         self.cellSize = cellSize
@@ -159,25 +160,63 @@ class CellGrid(Canvas):
         self.draw()
 
     def drawPath(self):
-        print("Please work")
-        print(self.grid[0][0].abs)
-        print(self.grid[1][1].abs)
-        print(self.grid[1][1].fill)
+        # print("Please work")
+        # print(self.grid[0][0].abs)
+        # print(self.grid[1][1].abs)
+        # print(self.grid[1][1].fill)
         self.findWalkAble()
+
+        # print("({}, {}".format(self.grid[7][7].abs, self.grid[7][7].ord))
+        #
+        # print(self.findNeighbors(self.grid[0][0].abs, self.grid[0][0].ord))
+        # print(self.findNeighbors(self.grid[7][7].abs, self.grid[7][7].ord))
+        # print(self.findNeighbors(self.grid[0][5].abs, self.grid[0][5].ord))
 
         curX = 0
         curY = 0
 
+        self.q1.append((curX, curY))
+        self.correctPath[curX, curY] = curX, curY
 
-    def findWalkAble(self):
-        for row in self.grid:
-            for cell in row:
-                if cell.fill == False:
-                    self.path.append((cell.abs, cell.ord))
+        while len(self.q1) > 0:
+            x, y = self.q1.popleft()
 
-        for x in range(len(self.path)):
-            print(self.path[x])
+            if(x-1, y) in self.path and (x -1, y) not in self.visited:
+                cell = (x-1, y)
+                self.correctPath[cell] = x, y
+                self.q1.append(cell)
+                self.visited.add((x-1, y))
 
+            if (x, y+1) in self.path and (x, y+1) not in self.visited:
+                cell = (x, y+1)
+                self.correctPath[cell] = x, y
+                self.q1.append(cell)
+                self.visited.add((x, y+1))
+                #print(self.correctPath)
+
+            if (x+1, y) in self.path and (x+1, y) not in self.visited:
+                cell = (x+1, y)
+                self.correctPath[cell] = x, y
+                self.q1.append(cell)
+                self.visited.add((x+1, y))
+
+            if (x, y-1) in self.path and (x, y-1) not in self.visited:
+                cell = (x, y-1)
+                self.correctPath[cell] = x, y
+                self.q1.append(cell)
+                self.visited.add((x, y-1))
+
+        print("curX is {} and curY is {}".format(curX, curY))
+        self.backTrace()
+
+    def backTrace(self):
+        print("The path to take is this: ")
+        curX = self.boardSize-1
+        curY = curX
+
+        while (curX, curY) != (0, 0):
+            print(self.correctPath[curX, curY])
+            curX, curY =self.correctPath[curX, curY]
 
     def draw(self):
         skip = False
@@ -192,6 +231,22 @@ class CellGrid(Canvas):
 
         cell.drawEnd()
         cell.end = True
+
+    def findNeighbors(self, x, y):
+        if x == 0 and y == 0:
+            return (x + 1, y), (x, y+1)
+        elif x == self.boardSize-1 and y == self.boardSize-1:
+            return (x-1, y) , (x, y-1)
+        elif x != self.boardSize-1 or x != 0 and y == self.boardSize-1:
+            return (x-1, y), (x+1, y), (x, y-1)
+        elif x != self.boardSize-1 or x != 0 and y == 0:
+            return (x-1, y), (x+1, y), (x, y+1)
+        elif x == self.boardSize-1 and y != self.boardSize-1 or y != 0:
+            return (x, y+1), (x-1, y), (x, y-1)
+        elif x == 0 and y == self.boardSize-1:
+            return (x+1, y), (x, y+1)
+        else:
+            return (x - 1, y), (x + 1, y), (x, y - 1), (x, y + 1)
 
     def _eventCoords(self, event):
         row = int(event.y / self.cellSize)
