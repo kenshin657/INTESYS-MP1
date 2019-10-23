@@ -218,6 +218,16 @@ class CellGrid(Canvas):
             print(self.correctPath[curX, curY])
             curX, curY =self.correctPath[curX, curY]
 
+
+    def findWalkAble(self):
+        for row in self.grid:
+            for cell in row:
+                if cell.fill == False:
+                    self.path.append((cell.abs, cell.ord))
+                else:
+                    self.walls.append((cell.abs, cell.ord))
+
+
     def draw(self):
         skip = False
         for row in self.grid:
@@ -231,22 +241,6 @@ class CellGrid(Canvas):
 
         cell.drawEnd()
         cell.end = True
-
-    def findNeighbors(self, x, y):
-        if x == 0 and y == 0:
-            return (x + 1, y), (x, y+1)
-        elif x == self.boardSize-1 and y == self.boardSize-1:
-            return (x-1, y) , (x, y-1)
-        elif x != self.boardSize-1 or x != 0 and y == self.boardSize-1:
-            return (x-1, y), (x+1, y), (x, y-1)
-        elif x != self.boardSize-1 or x != 0 and y == 0:
-            return (x-1, y), (x+1, y), (x, y+1)
-        elif x == self.boardSize-1 and y != self.boardSize-1 or y != 0:
-            return (x, y+1), (x-1, y), (x, y-1)
-        elif x == 0 and y == self.boardSize-1:
-            return (x+1, y), (x, y+1)
-        else:
-            return (x - 1, y), (x + 1, y), (x, y - 1), (x, y + 1)
 
     def _eventCoords(self, event):
         row = int(event.y / self.cellSize)
