@@ -63,6 +63,7 @@ class Cell():
         self.visited = False
         self.start = False
         self.end  = False
+        self.right = False
 
     def _switch(self):
         """ Switch if the cell is filled or not. """
@@ -108,11 +109,20 @@ class Cell():
 
         self.master.create_rectangle(xmin, ymin, xmax, ymax, fill=fill, outline=outline)
 
-    def drawPath(self):
-        if not self.visited:
-            self.visited = True
+    def drawVisit(self, x, y):
 
         fill = Cell.VISITED_STATE
+        outline = Cell.FILLED_COLOR_BORDER
+
+        xmin = x * self.size
+        xmax = xmin + self.size
+        ymin = y * self.size
+        ymax = ymin + self.size
+
+        self.master.create_rectangle(xmin, ymin, xmax, ymax, fill=fill, outline=outline)
+
+    def drawPath(self):
+        fill = Cell.PATH_STATE
         outline = Cell.FILLED_COLOR_BORDER
 
         xmin = self.abs * self.size
@@ -121,7 +131,6 @@ class Cell():
         ymax = ymin + self.size
 
         self.master.create_rectangle(xmin, ymin, xmax, ymax, fill=fill, outline=outline)
-
 
 
 class CellGrid(Canvas):
@@ -136,6 +145,7 @@ class CellGrid(Canvas):
         self.correctPath ={}
         self.walls = []
         self.visited = set()
+        self.finalPath = set()
 
         self.cellSize = cellSize
         self.button = Button(master, text="Solve Maze", command=self.drawPath)
@@ -177,46 +187,72 @@ class CellGrid(Canvas):
 
         self.q1.append((curX, curY))
         self.correctPath[curX, curY] = curX, curY
+        print("Visited Nodes")
+
 
         while len(self.q1) > 0:
+            time.sleep(1)
             x, y = self.q1.popleft()
 
-            if(x-1, y) in self.path and (x -1, y) not in self.visited:
+            if(x-1, y) in self.path and (x -1, y) not in self.visited and (x-1, y) not in self.walls:
                 cell = (x-1, y)
                 self.correctPath[cell] = x, y
                 self.q1.append(cell)
                 self.visited.add((x-1, y))
+                self.grid[x-1][y].visited = True
+                print("({},{})".format(x-1, y))
+                self.grid[x-1][y].drawVisit(x-1, y)
 
-            if (x, y+1) in self.path and (x, y+1) not in self.visited:
+            if (x, y+1) in self.path and (x, y+1) not in self.visited and (x, y+1) not in self.walls:
                 cell = (x, y+1)
                 self.correctPath[cell] = x, y
                 self.q1.append(cell)
                 self.visited.add((x, y+1))
-                #print(self.correctPath)
+                self.grid[x][y+1].visited = True
+                print("({},{})".format(x, y+1))
+                self.grid[x][y+1].drawVisit(x, y+1)
 
-            if (x+1, y) in self.path and (x+1, y) not in self.visited:
+            if (x+1, y) in self.path and (x+1, y) not in self.visited and (x+1,y) not in self.walls:
                 cell = (x+1, y)
                 self.correctPath[cell] = x, y
                 self.q1.append(cell)
                 self.visited.add((x+1, y))
+                self.grid[x+1][y].visited = True
+                print("({},{})".format(x + 1, y))
+                self.grid[x + 1][y].drawVisit(x + 1, y)
 
-            if (x, y-1) in self.path and (x, y-1) not in self.visited:
+            if (x, y-1) in self.path and (x, y-1) not in self.visited and (x,y-1) not in self.walls:
                 cell = (x, y-1)
                 self.correctPath[cell] = x, y
                 self.q1.append(cell)
                 self.visited.add((x, y-1))
+                self.grid[x][y-1].visited = True
+                print("({},{})".format(x, y-1))
+                self.grid[x][y-1].drawVisit(x, y-1)
 
-        print("curX is {} and curY is {}".format(curX, curY))
+
+
+        #print("curX is {} and curY is {}".format(curX, curY))
         self.backTrace()
 
+        #print("Data inside Final Path")
+        # print(self.finalPath)
+
+        self.draw()
+
     def backTrace(self):
-        print("The path to take is this: ")
+        # print("The path to take is this: ")
         curX = self.boardSize-1
         curY = curX
 
         while (curX, curY) != (0, 0):
-            print(self.correctPath[curX, curY])
+            #print(self.correctPath[curX, curY])
+            #self.finalPath[curX, curY] = curX, curY
+            self.finalPath.add(self.correctPath[curX, curY])
             curX, curY =self.correctPath[curX, curY]
+
+        #print("After the while loop")
+        #print(self.finalPath)
 
 
     def findWalkAble(self):
@@ -229,6 +265,7 @@ class CellGrid(Canvas):
 
 
     def draw(self):
+        time.sleep(3)
         skip = False
         for row in self.grid:
             for cell in row:
@@ -236,6 +273,9 @@ class CellGrid(Canvas):
                     cell.start = True
                     cell.drawStart()
                     skip = True
+                elif (cell.abs, cell.ord) in self.finalPath: #cell.visited == True:
+                    #print("Right On")
+                    cell.drawPath()
                 else:
                     cell.draw()
 
