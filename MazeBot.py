@@ -55,8 +55,8 @@ class Cell():
 
     def __init__(self, master, x, y, size):
         self.master = master
-        self.abs = x
-        self.ord = y
+        self.cordX = x
+        self.cordY = y
         self.size= size
         self.fill= False
         self.visited = False
@@ -78,9 +78,9 @@ class Cell():
                 fill = Cell.EMPTY_COLOR_BG
                 outline = Cell.EMPTY_COLOR_BORDER
 
-            xmin = self.abs * self.size
+            xmin = self.cordX * self.size
             xmax = xmin + self.size
-            ymin = self.ord * self.size
+            ymin = self.cordY * self.size
             ymax = ymin + self.size
 
             self.master.create_rectangle(xmin, ymin, xmax, ymax, fill = fill, outline = outline)
@@ -88,9 +88,9 @@ class Cell():
         fill = Cell.START_STATE
         outline = Cell.EMPTY_COLOR_BORDER
 
-        xmin = self.abs * self.size
+        xmin = self.cordX * self.size
         xmax = xmin + self.size
-        ymin = self.ord * self.size
+        ymin = self.cordY * self.size
         ymax = ymin + self.size
 
         self.master.create_rectangle(xmin, ymin, xmax, ymax, fill=fill, outline=outline)
@@ -99,9 +99,9 @@ class Cell():
         fill = Cell.END_STATE
         outline = Cell.EMPTY_COLOR_BORDER
 
-        xmin = self.abs * self.size
+        xmin = self.cordX * self.size
         xmax = xmin + self.size
-        ymin = self.ord * self.size
+        ymin = self.cordY * self.size
         ymax = ymin + self.size
 
         self.master.create_rectangle(xmin, ymin, xmax, ymax, fill=fill, outline=outline)
@@ -122,9 +122,9 @@ class Cell():
         fill = Cell.PATH_STATE
         outline = Cell.FILLED_COLOR_BORDER
 
-        xmin = self.abs * self.size
+        xmin = self.cordX * self.size
         xmax = xmin + self.size
-        ymin = self.ord * self.size
+        ymin = self.cordY * self.size
         ymax = ymin + self.size
 
         self.master.create_rectangle(xmin, ymin, xmax, ymax, fill=fill, outline=outline)
@@ -166,16 +166,16 @@ class CellGrid(Canvas):
 
     def drawPath(self):
         # print("Please work")
-        # print(self.grid[0][0].abs)
-        # print(self.grid[1][1].abs)
+        # print(self.grid[0][0].cordX)
+        # print(self.grid[1][1].cordX)
         # print(self.grid[1][1].fill)
         self.findWalkAble()
 
-        # print("({}, {}".format(self.grid[7][7].abs, self.grid[7][7].ord))
+        # print("({}, {}".format(self.grid[7][7].cordX, self.grid[7][7].cordY))
         #
-        # print(self.findNeighbors(self.grid[0][0].abs, self.grid[0][0].ord))
-        # print(self.findNeighbors(self.grid[7][7].abs, self.grid[7][7].ord))
-        # print(self.findNeighbors(self.grid[0][5].abs, self.grid[0][5].ord))
+        # print(self.findNeighbors(self.grid[0][0].cordX, self.grid[0][0].cordY))
+        # print(self.findNeighbors(self.grid[7][7].cordX, self.grid[7][7].cordY))
+        # print(self.findNeighbors(self.grid[0][5].cordX, self.grid[0][5].cordY))
 
         curX = 0
         curY = 0
@@ -259,9 +259,9 @@ class CellGrid(Canvas):
         for row in self.grid:
             for cell in row:
                 if cell.fill == False:
-                    self.path.append((cell.abs, cell.ord))
+                    self.path.append((cell.cordX, cell.cordY))
                 else:
-                    self.walls.append((cell.abs, cell.ord))
+                    self.walls.append((cell.cordX, cell.cordY))
 
 
     def draw(self):
@@ -273,7 +273,7 @@ class CellGrid(Canvas):
                     cell.start = True
                     cell.drawStart()
                     skip = True
-                elif (cell.abs, cell.ord) in self.finalPath: #cell.visited == True:
+                elif (cell.cordX, cell.cordY) in self.finalPath: #cell.visited == True:
                     #print("Right On")
                     cell.drawPath()
                 else:
