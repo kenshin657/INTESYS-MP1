@@ -185,7 +185,7 @@ class CellGrid(Canvas):
         print("Visited Nodes")
 
         while len(self.q1) > 0:
-            time.sleep(0.3)
+            time.sleep(0.2)
             x, y = self.q1.popleft()
 
             if(x-1, y) in self.path and (x -1, y) not in self.visited and (x-1, y) not in self.walls:
