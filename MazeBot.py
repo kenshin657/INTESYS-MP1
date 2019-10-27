@@ -54,7 +54,6 @@ class Cell():
     PATH_STATE = "orange"
 
     def __init__(self, master, x, y, size):
-        """ Constructor of the object called by Cell(...) """
         self.master = master
         self.abs = x
         self.ord = y
@@ -62,15 +61,13 @@ class Cell():
         self.fill= False
         self.visited = False
         self.start = False
-        self.end  = False
+        self.end = False
         self.right = False
 
     def _switch(self):
-        """ Switch if the cell is filled or not. """
         self.fill = not self.fill
 
     def draw(self):
-        """ order to the cell to draw its representation on the canvas """
 
         if self.master != None :
             fill = Cell.FILLED_COLOR_BG
@@ -160,10 +157,8 @@ class CellGrid(Canvas):
 
             self.grid.append(line)
 
-        #memorize the cells that have been modified to avoid many switching of state during mouse motion.
         self.switched = []
 
-        #bind click action
         self.bind("<Button-1>", self.handleMouseClick)
         self.bind("<ButtonRelease-1>", lambda event: self.switched.clear())
 
@@ -188,7 +183,6 @@ class CellGrid(Canvas):
         self.q1.append((curX, curY))
         self.correctPath[curX, curY] = curX, curY
         print("Visited Nodes")
-
 
         while len(self.q1) > 0:
             time.sleep(0.3)
