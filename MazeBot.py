@@ -191,7 +191,7 @@ class CellGrid(Canvas):
 
 
         while len(self.q1) > 0:
-            time.sleep(1)
+            time.sleep(0.3)
             x, y = self.q1.popleft()
 
             if(x-1, y) in self.path and (x -1, y) not in self.visited and (x-1, y) not in self.walls:
@@ -239,6 +239,12 @@ class CellGrid(Canvas):
         # print(self.finalPath)
 
         self.draw()
+
+        print("Total Steps")
+        y=0
+        for x in self.finalPath:
+            y += 1
+        print(y)
 
     def backTrace(self):
         # print("The path to take is this: ")
